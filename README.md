@@ -8,7 +8,7 @@ This script is meant to be run as a cron job, but can be run from the command li
 You must set the following environment variables (gmail variables used to send email):
 
 export FITBIT_APP_CONSUMER_KEY=your fitbit app consumer key  
-export FITBIT_APP_CONSUMER_SECRET=your fitbit app consumer secret
+export FITBIT_APP_CONSUMER_SECRET=your fitbit app consumer secret  
 export FITBIT_TOKEN=your fitbit account oauth token  
 export FITBIT_SECRET=your fitbit account oauth secret  
 export FITBIT_EMAIL=the email you use to log into the fitbit.com website  
