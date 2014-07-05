@@ -6,6 +6,7 @@ require 'action_mailer'
 
 last_day_steps = nil
 current_day_steps = nil
+retries = 0
 
 if ARGV[0] && ARGV[1]
     yesterday = Time.parse(ARGV[0])
@@ -16,11 +17,16 @@ else
 end
 
 Mechanize.start do |m|
-    m.get("https://www.fitbit.com/login") do |login_page|
-        dashboard_page = login_page.form_with(:action => "https://www.fitbit.com/login") do |f|
-            f.email = ENV["FITBIT_EMAIL"]
-            f.password = ENV["FITBIT_PASSWORD"]
-        end.submit
+    begin
+        m.get("https://www.fitbit.com/login") do |login_page|
+            dashboard_page = login_page.form_with(:action => "https://www.fitbit.com/login") do |f|
+                f.email = ENV["FITBIT_EMAIL"]
+                f.password = ENV["FITBIT_PASSWORD"]
+            end.submit
+        end
+    rescue
+        retries += 1
+        retry if retries < 1
     end
 
     m.get("http://www.fitbit.com/graph/getNewGraphData?userId=#{ENV["FITBIT_USER_ID"]}&type=intradaySteps&dateFrom=#{yesterday.year}-#{yesterday.month}-#{yesterday.day}&dateTo=#{yesterday.year}-#{yesterday.month}-#{yesterday.day}&apiFormat=json") do |json_data|
